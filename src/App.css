@@ -1,0 +1,163 @@
+/* ============================================= */
+/*               CONTENEDOR DE FONDO             */
+/* ============================================= */
+/* ============================================= */
+/*             ESCALA GENERAL DE LA APP          */
+/* ============================================= */
+.App {
+  max-width: 50000px;
+  margin: 0 auto;
+  padding: 0px;
+  font-family: Geneva, Roboto, sans-serif;
+}
+
+
+.viewtrailer-bg {
+  width: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #000;
+  transition: background-image 0.8s ease-in-out;
+
+  /* Si deseas activar blur, descomenta lo siguiente: */
+  /* position: relative; */
+}
+
+.viewtrailer-bg::after {
+  /* Blur de fondo opcional */
+  /*
+  content: "";
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1;
+  */
+}
+
+/* ============================================= */
+/*               CONTENEDOR INTERNO              */
+/* ============================================= */
+.viewtrailer {
+  font-family: Geneva, Roboto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  color: white;
+  font-size: 19px;
+  line-height: 2;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.74);
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative; /* Necesario si usas blur */
+  z-index: 2;
+}
+
+.viewtrailer h1,
+.viewtrailer p {
+  margin: 0;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================= */
+/*                  BOTÓN CIERRE                 */
+/* ============================================= */
+.boton {
+  background-color: #0f1014;
+  color: white;
+  outline: none;
+  border: 1px solid white;
+  padding: 10px 15px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+/* ============================================= */
+/*              CONTENEDOR VIDEO / IFRAME        */
+/* ============================================= */
+.reproductor {
+  width: 100%;
+  height: auto;
+}
+
+/* ============================================= */
+/*              FILTROS Y MENÚS                  */
+/* ============================================= */
+.menu-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.search-button,
+.filter-button {
+  background-color: #124bcb;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 15px;
+  cursor: pointer;
+  width: 100px;
+  text-align: center;
+  margin: 0 10px;
+}
+
+.search-button:hover,
+.filter-button:hover {
+  background-color: #ddff1d;
+}
+
+.category-buttons select {
+  background-color: #124bcb;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.category-buttons select:hover {
+  background-color: #0056b3;
+}
+
+/* ============================================= */
+/*           POSTERS Y CONTENEDOR MOVIES         */
+/* ============================================= */
+.container_movies img {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+}
+
+/* ============================================= */
+/*                 FAVORITOS                     */
+/* ============================================= */
+.favorite-button {
+  background-color: #ffd700;
+  border: none;
+  border-radius: 5px;
+  color: #000;
+  cursor: pointer;
+  padding: 10px 20px;
+  font-size: 16px;
+  margin: 10px 0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.favorite-button.favorited {
+  background-color: #ff4500;
+  color: #fff;
+}
+
+.favorite-button:hover {
+  background-color: #ffa500;
+  color: #fff;
+}

@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+    /*font-family: "Segoe UI";*/
+    font-family: Geneva, Roboto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 19px; /* Ajuste del tamaño de fuente */
+    line-height: 1; /* Mejora la legibilidad */
+}
+
+
+/* Footer.css */
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0);
+}
+
