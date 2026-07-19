@@ -110,6 +110,7 @@ export const browse = async ({
   sort = "",
   fromDate,
   toDate,
+  voteCountGte,
   page = 1,
 }) => {
   let path;
@@ -129,6 +130,8 @@ export const browse = async ({
       params[`${field}.gte`] = fromDate;
       params[`${field}.lte`] = toDate;
     }
+    // Mínimo de votos: evita estrenos "de la nada" sin público (solo populares/conocidas)
+    if (voteCountGte) params["vote_count.gte"] = voteCountGte;
   }
 
   const data = await get(path, params);
@@ -162,6 +165,13 @@ export const getProviders = async (media, id) => {
 // --- Tendencias de la semana ---
 export const getTrending = async (media = "movie") => {
   const data = await get(`/trending/${media}/week`);
+  return filterSharks(data.results || []);
+};
+
+// --- En cines / en emisión (actualmente) ---
+export const getNowPlaying = async (media = "movie") => {
+  const path = media === "tv" ? "/tv/on_the_air" : "/movie/now_playing";
+  const data = await get(path, {});
   return filterSharks(data.results || []);
 };
 

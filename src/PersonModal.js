@@ -13,6 +13,18 @@ const KNOWN_FOR = {
   Camera: "Cámara",
 };
 
+// Edad a partir de la fecha de nacimiento (hasta hoy, o hasta la muerte si falleció)
+const computeAge = (birth, death) => {
+  if (!birth) return null;
+  const b = new Date(birth);
+  if (isNaN(b)) return null;
+  const end = death ? new Date(death) : new Date();
+  let age = end.getFullYear() - b.getFullYear();
+  const m = end.getMonth() - b.getMonth();
+  if (m < 0 || (m === 0 && end.getDate() < b.getDate())) age -= 1;
+  return age >= 0 && age < 130 ? age : null;
+};
+
 function PersonModal({ personId, onClose, onOpenItem }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -62,6 +74,12 @@ function PersonModal({ personId, onClose, onOpenItem }) {
 
   const bio = data?.biography || "";
   const longBio = bio.length > 520;
+  const age = data ? computeAge(data.birthday, data.deathday) : null;
+  // Otros nombres (quita el nombre principal y duplicados; muestra unos pocos)
+  const aka = (data?.also_known_as || [])
+    .filter((n) => n && n.trim() && n.trim() !== (data?.name || "").trim())
+    .slice(0, 3)
+    .join(", ");
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -118,6 +136,30 @@ function PersonModal({ personId, onClose, onOpenItem }) {
                   {data.deathday && (
                     <div>
                       <strong>{t("death")}</strong> {data.deathday}
+                      {age != null ? ` (${age} ${t("yearsOld")})` : ""}
+                    </div>
+                  )}
+                  {age != null && !data.deathday && (
+                    <div>
+                      <strong>{t("age")}</strong> {age} {t("yearsOld")}
+                    </div>
+                  )}
+                  {aka && (
+                    <div>
+                      <strong>{t("alsoKnownAs")}</strong> {aka}
+                    </div>
+                  )}
+                  {data.homepage && (
+                    <div>
+                      <strong>{t("website")}</strong>{" "}
+                      <a
+                        href={data.homepage}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="person__link"
+                      >
+                        {data.homepage.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                      </a>
                     </div>
                   )}
                 </div>

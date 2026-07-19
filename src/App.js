@@ -21,6 +21,7 @@ import { t, setUiLang } from "./i18n";
 import {
   browse,
   getTrending,
+  getNowPlaying,
   getDetail,
   getProviders,
   pickTrailer,
@@ -144,6 +145,10 @@ function App() {
   const [media, setMedia] = useState("movie");
   const [movies, setMovies] = useState([]);
   const [trending, setTrending] = useState([]);
+  const [featured, setFeatured] = useState([]); // "En cines" (actualmente en cartelera)
+  // Recomendaciones del último título abierto en modo ventana (modal).
+  const [modalRecs, setModalRecs] = useState([]);
+  const [modalRecsMedia, setModalRecsMedia] = useState("movie");
 
   const [detail, setDetail] = useState(null); // detalle inline (1 clic)
   const [providers, setProviders] = useState(null);
@@ -296,7 +301,11 @@ function App() {
       const data = await browse({ ...q, page: pageNum });
       setTotalPages(data.totalPages);
       setPage(data.page);
-      setMovies((prev) => (append ? [...prev, ...data.results] : data.results));
+      setMovies((prev) => {
+        if (!append) return data.results;
+        const seen = new Set(prev.map(favKey));
+        return [...prev, ...data.results.filter((x) => !seen.has(favKey(x)))];
+      });
       if (!append) {
         if (data.results.length && clickMode === "inline") {
           selectItem({ media: q.media, id: data.results[0].id });
@@ -318,7 +327,25 @@ function App() {
     runQuery(q, 1, false);
   };
 
-  const loadMore = () => runQuery(currentQuery, page + 1, true);
+  const loadMore = () => {
+    if (page < totalPages) {
+      runQuery(currentQuery, page + 1, true);
+      return;
+    }
+    // Feed de inicio: al agotarse los estrenos recientes, sigue "infinito"
+    // rellenando con populares (solo al pulsar "Cargar más").
+    if (currentQuery.__home && !currentQuery.__fill) {
+      const fill = {
+        media,
+        sort: "popularity.desc",
+        voteCountGte: currentQuery.voteCountGte,
+        __home: true,
+        __fill: true,
+      };
+      setCurrentQuery(fill);
+      runQuery(fill, 1, true);
+    }
+  };
 
   const fetchTrendingFor = async (m) => {
     try {
@@ -328,10 +355,36 @@ function App() {
     }
   };
 
+  // "En cines": lo que está actualmente en cartelera (now_playing / on_the_air)
+  const fetchFeaturedFor = async (m) => {
+    try {
+      setFeatured(await getNowPlaying(m));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Consulta por defecto del inicio: estrenos recientes Y populares (conocidos),
+  // ordenados por popularidad y con un mínimo de votos para descartar lo desconocido.
+  const recentQuery = (m) => {
+    const now = new Date();
+    const from = new Date(now);
+    from.setMonth(now.getMonth() - 4);
+    return {
+      media: m,
+      sort: "popularity.desc",
+      fromDate: from.toISOString().split("T")[0],
+      toDate: now.toISOString().split("T")[0],
+      voteCountGte: m === "movie" ? 80 : 20,
+      __home: true,
+    };
+  };
+
   // --- Carga inicial ---
   useEffect(() => {
-    applyQuery({ media: "movie" });
+    applyQuery(recentQuery("movie"));
     fetchTrendingFor("movie");
+    fetchFeaturedFor("movie");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -346,7 +399,7 @@ function App() {
   // Trae la clasificación (en segundo plano) de las películas visibles, para censurar.
   useEffect(() => {
     if (contentMode === "libre") return;
-    [...movies, ...trending].forEach((m) => {
+    [...movies, ...trending, ...featured].forEach((m) => {
       const key = favKey(m);
       if (
         ratingsRef.current[key] !== undefined ||
@@ -360,7 +413,31 @@ function App() {
         setRatingsVersion((v) => v + 1);
       });
     });
-  }, [movies, trending, contentMode]);
+  }, [movies, trending, featured, contentMode]);
+
+  // Al abrir un título en modo ventana, trae sus recomendaciones para
+  // mostrarlas abajo ("Recomendadas"), basadas en lo que se dio clic.
+  useEffect(() => {
+    if (!detailItem) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await getDetail(detailItem.media, detailItem.id);
+        if (cancelled) return;
+        const list = filterSharks(data.recommendations?.results || []).filter(
+          (r) => r.poster_path
+        );
+        setModalRecs(list);
+        setModalRecsMedia(detailItem.media);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detailItem?.media, detailItem?.id]);
 
   // --- Handlers ---
   const handleMediaChange = (m) => {
@@ -369,8 +446,10 @@ function App() {
     setSearchKey("");
     setCategory("");
     setActiveFilter("");
-    applyQuery({ media: m });
+    setModalRecs([]);
+    applyQuery(recentQuery(m));
     fetchTrendingFor(m);
+    fetchFeaturedFor(m);
   };
 
   const searchMovies = (e) => {
@@ -384,7 +463,9 @@ function App() {
     setCategory("");
     setActiveFilter("");
     setFiltersOpen(false);
-    applyQuery({ media });
+    setModalRecs([]);
+    applyQuery(recentQuery(media));
+    fetchFeaturedFor(media);
   };
 
   const handleCategoryChange = (value) => {
@@ -625,6 +706,11 @@ function App() {
   const dImdb = d?.imdb_id || d?.external_ids?.imdb_id || "";
   const dExternal = buildTitleUrl(settings.externalBase, dImdb);
 
+  // Recomendadas: en modo integrado vienen del detalle inline; en modo ventana,
+  // del último título abierto (modalRecs).
+  const recsList = dRecs.length ? dRecs : modalRecs;
+  const recsMedia = dRecs.length ? dMedia : modalRecsMedia;
+
   return (
     <div className="App">
       <header className="menu">
@@ -734,13 +820,15 @@ function App() {
         </div>
       </header>
 
-      <MovieCarousel
-        movies={movies}
-        onClickItem={onCardClick}
-        onDoubleClickItem={onCardDouble}
-        censorStatus={censorStatus}
-        onReveal={reveal}
-      />
+      {showTrending && featured.length > 0 && (
+        <MovieCarousel
+          movies={featured}
+          onClickItem={onCardClick}
+          onDoubleClickItem={onCardDouble}
+          censorStatus={censorStatus}
+          onReveal={reveal}
+        />
+      )}
 
       {d && (
         <section
@@ -903,7 +991,8 @@ function App() {
           <section className="section">
             <h2 className="section__title">{t("results")}</h2>
             <div className="movie-grid">{movies.map(renderCard)}</div>
-            {page < totalPages && (
+            {(page < totalPages ||
+              (currentQuery.__home && !currentQuery.__fill && movies.length > 0)) && (
               <div className="load-more-wrap">
                 <button
                   type="button"
@@ -918,11 +1007,11 @@ function App() {
           </section>
         )}
 
-        {dRecs.length > 0 && (
+        {recsList.length > 0 && (
           <section className="section">
             <h2 className="section__title">{t("recommended")}</h2>
             <MovieCarousel
-              movies={dRecs.map((r) => ({ ...r, media_type: dMedia }))}
+              movies={recsList.map((r) => ({ ...r, media_type: recsMedia }))}
               onClickItem={onCardClick}
               onDoubleClickItem={onCardDouble}
               censorStatus={censorStatus}
