@@ -1,22 +1,174 @@
+/* ==========================================================================
+   index.css — base global, sistema de temas y animación de modo oscuro
+   ========================================================================== */
+
+/* --------- Curvas de animación --------- */
+:root {
+  --expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --------- Tema CLARO (por defecto) --------- */
+:root {
+  color-scheme: light;
+
+  --bg: #f3f4f7;
+  --bg-2: #e9ebf0;
+  --surface: #ffffff;
+  --surface-2: #f0f2f6;
+  --header-bg: rgba(255, 255, 255, 0.72);
+  --text: #14161c;
+  --text-muted: #5c6470;
+  --border: #e3e6ec;
+
+  --accent: #e50914;
+  --accent-2: #ff5a5f;
+  --accent-contrast: #ffffff;
+  --star: #f5b301;
+  --star-empty: #cfd4dc;
+  --fav: #ff8f00;
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow-sm: 0 2px 8px rgba(20, 22, 28, 0.08);
+  --shadow: 0 12px 32px rgba(20, 22, 28, 0.14);
+  --shadow-lg: 0 24px 60px rgba(20, 22, 28, 0.22);
+}
+
+/* --------- Tema OSCURO --------- */
+html.dark {
+  color-scheme: dark;
+
+  --bg: #0a0c11;
+  --bg-2: #05060a;
+  --surface: #14181f;
+  --surface-2: #1c212b;
+  --header-bg: rgba(12, 14, 19, 0.72);
+  --text: #f2f4f8;
+  --text-muted: #97a1b0;
+  --border: #262d39;
+
+  --accent: #e50914;
+  --accent-2: #ff5a5f;
+  --accent-contrast: #ffffff;
+  --star: #ffc107;
+  --star-empty: #3a4250;
+  --fav: #ffb300;
+
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.5);
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 26px 64px rgba(0, 0, 0, 0.65);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
-    margin: 0;
-    /*font-family: "Segoe UI";*/
-    font-family: Geneva, Roboto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: 19px; /* Ajuste del tamaño de fuente */
-    line-height: 1; /* Mejora la legibilidad */
+  margin: 0;
+  padding: 0;
 }
 
+body {
+  font-family: "Segoe UI", Roboto, Geneva, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  line-height: 1.55;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
 
-/* Footer.css */
+a {
+  color: var(--accent);
+}
+
+/* Scrollbar sutil */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
 footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 20px 0;
-    bottom: 0;
-    width: 100%;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0);
+  background: var(--surface);
+  color: var(--text-muted);
+  text-align: center;
+  padding: 26px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+.footer__tmdb {
+  max-width: 680px;
+  margin: 0 auto 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+.footer__credit {
+  margin: 0;
+  font-size: 13px;
 }
 
+/* ==========================================================================
+   Transición de tema (View Transitions API)
+   ========================================================================== */
+::view-transition-group(root) {
+  animation-duration: 0.7s;
+  animation-timing-function: var(--expo-out);
+}
+
+::view-transition-new(root) {
+  animation-name: reveal-light;
+  animation-fill-mode: both;
+}
+
+::view-transition-old(root),
+.dark::view-transition-old(root) {
+  animation: none;
+  animation-fill-mode: both;
+  z-index: -1;
+}
+
+.dark::view-transition-new(root) {
+  animation-name: reveal-dark;
+  animation-fill-mode: both;
+}
+
+@keyframes reveal-dark {
+  from {
+    clip-path: polygon(50% -71%, -50% 71%, -50% 71%, 50% -71%);
+  }
+  to {
+    clip-path: polygon(50% -71%, -50% 71%, 50% 171%, 171% 50%);
+  }
+}
+
+@keyframes reveal-light {
+  from {
+    clip-path: polygon(171% 50%, 50% 171%, 50% 171%, 171% 50%);
+  }
+  to {
+    clip-path: polygon(171% 50%, 50% 171%, -50% 71%, 50% -71%);
+  }
+}
+
+/* Respeta a quienes prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-new(root),
+  ::view-transition-old(root) {
+    animation: none !important;
+  }
+}

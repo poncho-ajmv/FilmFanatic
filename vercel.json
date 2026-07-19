@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/movie/:id", "destination": "/api/preview?media=movie&id=:id" },
+    { "source": "/tv/:id", "destination": "/api/preview?media=tv&id=:id" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

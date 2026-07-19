@@ -1,86 +1,132 @@
-import React from 'react';
-import Slider from 'react-slick';
-import StarRating from './StarRating'; // Asegúrate de tener este componente bien configurado
+import React from "react";
+import Slider from "react-slick";
+import StarRating from "./StarRating";
+import { titleOf } from "./api";
+import { t } from "./i18n";
+import { EyeIcon } from "./Icons";
+import "./MovieCarousel.css";
 
-function MovieCarousel({ movies, selectMovie }) {
-    const settings = {
-        dots: true,
-        infinite: true,
-        speed: 300,
-        slidesToShow: 5,
-        slidesToScroll: 5,
-        prevArrow: <CustomPrevArrow />,
-        nextArrow: <CustomNextArrow />
-    };
+const NO_IMAGE =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300'>
+      <rect width='100%' height='100%' fill='#1c212b'/>
+      <text x='50%' y='50%' fill='#97a1b0' font-family='sans-serif' font-size='16'
+        text-anchor='middle' dominant-baseline='middle'>Sin imagen</text>
+    </svg>`
+  );
 
-    function CustomPrevArrow(props) {
-        const { className, style, onClick } = props;
-        return (
-            <div
-                className={className}
-                style={{ ...style, display: "block", background: "black" }}
-                onClick={onClick}
-            />
-        );
-    }
+function Arrow({ dir, className, style, onClick }) {
+  return (
+    <button
+      type="button"
+      className={className}
+      style={{ ...style, display: "flex", alignItems: "center", justifyContent: "center" }}
+      onClick={onClick}
+      aria-label={dir === "prev" ? "Anterior" : "Siguiente"}
+    >
+      <svg
+        viewBox="0 0 24 24"
+        width="20"
+        height="20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        {dir === "prev" ? <path d="M15 5l-7 7 7 7" /> : <path d="M9 5l7 7-7 7" />}
+      </svg>
+    </button>
+  );
+}
 
-    function CustomNextArrow(props) {
-        const { className, style, onClick } = props;
-        return (
-            <div
-                className={className}
-                style={{ ...style, display: "block", background: "black", marginRight: "4px" }}
-                onClick={onClick}
-            />
-        );
-    }
+function MovieCarousel({
+  movies = [],
+  onClickItem,
+  onDoubleClickItem,
+  censorStatus = () => "show",
+  onReveal = () => {},
+}) {
+  const visible = movies.filter((m) => censorStatus(m) !== "hidden");
+  if (!visible.length) return null;
 
-    return (
-        <div style={{ maxWidth: '1800px', margin: '20px auto' }}>
-            <Slider {...settings}>
-                {movies.map(movie => (
-                    <div
-                        key={movie.id}
-                        onClick={() => selectMovie(movie)}
-                        style={{
-                            padding: "10px",
-                            textAlign: 'center',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        <div style={{
-                            width: '200px',
-                            height: '300px',
-                            backgroundColor: '#222',
-                            borderRadius: '10px',
-                            overflow: 'hidden',
-                            margin: '0 auto'
-                        }}>
-                            <img
-                                loading="lazy"
-                                src={
-                                    movie.poster_path
-                                        ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                                        : "https://via.placeholder.com/200x300?text=No+Image"
-                                }
-                                alt={movie.title}
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                onError={(e) => {
-                                    e.target.onerror = null;
-                                    e.target.src = "https://via.placeholder.com/200x300?text=No+Image";
-                                }}
-                            />
-                        </div>
-                        <h4 style={{ color: 'white', marginTop: '10px' }}>{movie.title}</h4>
-                        <StarRating rating={movie.vote_average} />
-                        <p style={{ color: '#ccc', fontSize: '14px' }}>
-                            {movie.vote_average?.toFixed(1)} / 10
-                        </p>
-                    </div>
-                ))}
-            </Slider>
-        </div>
-    );
+  const settings = {
+    dots: false,
+    infinite: visible.length > 5,
+    speed: 400,
+    slidesToShow: 5,
+    slidesToScroll: 3,
+    swipeToSlide: true,
+    prevArrow: <Arrow dir="prev" />,
+    nextArrow: <Arrow dir="next" />,
+    responsive: [
+      { breakpoint: 1200, settings: { slidesToShow: 4, slidesToScroll: 2 } },
+      { breakpoint: 900, settings: { slidesToShow: 3, slidesToScroll: 2 } },
+      { breakpoint: 640, settings: { slidesToShow: 2, slidesToScroll: 2 } },
+      { breakpoint: 460, settings: { slidesToShow: 2, slidesToScroll: 1 } },
+    ],
+  };
+
+  return (
+    <div className="carousel">
+      <Slider {...settings}>
+        {visible.map((movie) => {
+          const status = censorStatus(movie);
+          const censored = status === "pending" || status === "censor";
+          return (
+            <div key={movie.id} className="carousel__slide">
+              <button
+                type="button"
+                className="carousel__item"
+                onClick={() => {
+                  if (censored) {
+                    onReveal(movie);
+                    return;
+                  }
+                  onClickItem && onClickItem(movie);
+                }}
+                onDoubleClick={() => {
+                  if (!censored) onDoubleClickItem && onDoubleClickItem(movie);
+                }}
+              >
+                <div className="carousel__poster">
+                  <img
+                    loading="lazy"
+                    className={censored ? "censored" : ""}
+                    src={
+                      movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
+                        : NO_IMAGE
+                    }
+                    alt={censored ? "" : titleOf(movie)}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = NO_IMAGE;
+                    }}
+                  />
+                  {status === "censor" && (
+                    <span className="censor-overlay">
+                      <EyeIcon />
+                      <span className="censor-overlay__text">{t("sensitive")}</span>
+                      <span className="censor-overlay__hint">{t("clickToView")}</span>
+                    </span>
+                  )}
+                </div>
+                <h4 className="carousel__title">{titleOf(movie)}</h4>
+                <div className="carousel__stars">
+                  <StarRating rating={movie.vote_average} size={16} />
+                </div>
+                <p className="carousel__score">
+                  {movie.vote_average ? movie.vote_average.toFixed(1) : "—"} / 10
+                </p>
+              </button>
+            </div>
+          );
+        })}
+      </Slider>
+    </div>
+  );
 }
 
 export default MovieCarousel;

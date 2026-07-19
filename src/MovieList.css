@@ -1,20 +1,4 @@
-/* MovieList.css 
-El encargado que hacer que se mire de buena manera toda la lista 
-*/
-.container_movies {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.row_movies {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.col_movies {
-    margin: 100px;
-    max-width: 250px; /* Ajusta el ancho máximo según sea necesario */
-    text-align: center;
-}
+/* ==========================================================================
+   MovieList.css — (legado) la cuadrícula ahora vive en App.css (.movie-grid)
+   Se conserva el archivo por compatibilidad de imports.
+   ========================================================================== */

@@ -1,0 +1,633 @@
+/* ==========================================================================
+   Modal.css — modal de detalle, modal de actor, configuración y skeletons
+   ========================================================================== */
+
+/* --------- Overlay + contenedor --------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  overflow-y: auto;
+  animation: modal-fade 0.2s ease;
+}
+@keyframes modal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  animation: modal-rise 0.28s var(--expo-out);
+}
+.modal--person {
+  max-width: 900px;
+}
+@keyframes modal-rise {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 5;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.18s ease, transform 0.15s ease;
+}
+.modal__close:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: rotate(90deg);
+}
+
+/* --------- Detalle: cabecera con backdrop --------- */
+.detail__hero {
+  position: relative;
+  background-size: cover;
+  background-position: center 25%;
+  background-color: var(--bg-2);
+}
+.detail__hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.35) 0%,
+    rgba(0, 0, 0, 0.7) 60%,
+    rgba(0, 0, 0, 0.92) 100%
+  );
+}
+.detail__hero-inner {
+  position: relative;
+  display: flex;
+  gap: 28px;
+  padding: 44px 40px 32px;
+}
+.detail__poster {
+  width: 190px;
+  flex-shrink: 0;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+}
+.detail__info {
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
+  min-width: 0;
+}
+.detail__title {
+  margin: 0 0 6px;
+  font-size: clamp(24px, 3.4vw, 36px);
+  font-weight: 800;
+  line-height: 1.1;
+}
+.detail__tagline {
+  margin: 0 0 12px;
+  font-style: italic;
+  color: #dcdcdc;
+  font-size: 15px;
+}
+.detail__rating {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.detail__score {
+  font-weight: 600;
+}
+.detail__votes {
+  font-size: 13px;
+  color: #dcdcdc;
+}
+.detail__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ececec;
+}
+.detail__cert {
+  padding: 1px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 5px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.detail__genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 16px;
+}
+.detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.detail__providers {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.detail__providers-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #f1f1f1;
+}
+
+/* --------- Detalle: cuerpo --------- */
+.detail__body {
+  padding: 26px 40px 36px;
+}
+.detail__overview {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0 0 24px;
+}
+.detail__section-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 14px;
+}
+
+/* Tráiler integrado */
+.detail__trailer {
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: var(--shadow);
+  margin-bottom: 26px;
+}
+.detail__trailer iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.tab {
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.tab:hover {
+  color: var(--text);
+}
+.tab--active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* Reseñas */
+.review {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  background: var(--surface-2);
+}
+.review__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.review__author {
+  font-weight: 700;
+  font-size: 14.5px;
+}
+.review__rating {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--star);
+}
+.review__content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-line;
+}
+.review__content--clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.review__more {
+  margin-top: 8px;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-size: 13.5px;
+}
+.detail__empty {
+  color: var(--text-muted);
+  font-size: 14.5px;
+  padding: 6px 0 10px;
+}
+
+/* --------- Modal de actor --------- */
+.person__head {
+  display: flex;
+  gap: 26px;
+  padding: 40px 40px 24px;
+}
+.person__photo {
+  width: 170px;
+  flex-shrink: 0;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 16px;
+  background: var(--surface-2);
+  box-shadow: var(--shadow);
+}
+.person__name {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 800;
+}
+.person__facts {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.person__facts strong {
+  color: var(--text);
+}
+.person__bio {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--text);
+  white-space: pre-line;
+}
+.person__bio--clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.person__filmo {
+  padding: 8px 40px 40px;
+}
+
+/* --------- Menú de compartir --------- */
+.share-wrap {
+  position: relative;
+}
+.share-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  padding: 6px;
+  gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+}
+.share-menu a,
+.share-menu button {
+  display: block;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  font: inherit;
+}
+.share-menu a:hover,
+.share-menu button:hover {
+  background: var(--surface-2);
+}
+
+/* --------- Menú de configuración --------- */
+.settings-wrap {
+  position: relative;
+}
+.settings-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 60;
+  width: 320px;
+  max-width: 88vw;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  padding: 18px;
+  animation: modal-rise 0.2s var(--expo-out);
+}
+.settings-panel__title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin: 4px 0 10px;
+}
+.settings-panel__title + .settings-panel__title {
+  margin-top: 18px;
+}
+.theme-switch {
+  display: flex;
+  gap: 8px;
+}
+.theme-switch button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.theme-switch button.active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
+}
+.settings-sort {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.settings-sort button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+.settings-sort button.active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-color: var(--accent);
+}
+.settings-field {
+  margin-top: 8px;
+}
+.settings-field label {
+  display: block;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+.settings-field input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+}
+.settings-field input:focus {
+  border-color: var(--accent);
+}
+.settings-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+.settings-reset {
+  margin-top: 12px;
+  width: 100%;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.settings-reset:hover {
+  color: var(--text);
+  border-color: var(--text-muted);
+}
+
+/* --------- Selector Películas / Series --------- */
+.media-switch {
+  display: inline-flex;
+  padding: 4px;
+  gap: 2px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.media-switch button {
+  height: 34px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.media-switch button.active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+/* --------- Skeletons --------- */
+.skeleton {
+  background: linear-gradient(
+    100deg,
+    var(--surface-2) 30%,
+    var(--border) 50%,
+    var(--surface-2) 70%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shine 1.3s ease-in-out infinite;
+  border-radius: var(--radius);
+}
+@keyframes skeleton-shine {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+.skeleton-card__poster {
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius);
+}
+.skeleton-card__line {
+  height: 13px;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+.skeleton-card__line.short {
+  width: 60%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+}
+
+/* Skeleton del modal de detalle */
+.modal-skeleton__hero {
+  height: 300px;
+  border-radius: 0;
+}
+.modal-skeleton__body {
+  padding: 26px 40px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.modal-skeleton__line {
+  height: 14px;
+  border-radius: 6px;
+}
+
+/* Censura dentro del detalle */
+.detail__hero--censored .detail__hero-overlay {
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  background: rgba(0, 0, 0, 0.5);
+}
+.detail__reveal {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.28);
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+}
+.detail__reveal > span {
+  font-weight: 700;
+  font-size: 15px;
+}
+.detail__reveal-hint {
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  opacity: 0.85;
+}
+
+/* --------- Responsive --------- */
+@media (max-width: 720px) {
+  .modal-overlay {
+    padding: 0;
+  }
+  .modal {
+    border-radius: 0;
+    min-height: 100vh;
+    max-width: 100%;
+  }
+  .detail__hero-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px 20px 24px;
+  }
+  .detail__rating,
+  .detail__meta,
+  .detail__genres,
+  .detail__actions,
+  .detail__providers {
+    justify-content: center;
+  }
+  .detail__poster {
+    width: 150px;
+  }
+  .detail__body {
+    padding: 22px 18px 32px;
+  }
+  .person__head {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px 20px 20px;
+  }
+  .person__filmo {
+    padding: 8px 18px 36px;
+  }
+  .person__facts {
+    justify-content: center;
+  }
+}

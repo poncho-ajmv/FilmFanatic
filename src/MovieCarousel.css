@@ -1,25 +1,124 @@
-.movie-carousel-item {
-    padding: 15px;
-    text-align: center;
-    transition: all 0.5s ease;
+/* ==========================================================================
+   MovieCarousel.css — carrusel de portadas (react-slick)
+   ========================================================================== */
+
+.carousel {
+  max-width: 1460px;
+  margin: 26px auto 6px;
+  padding: 0 52px;
 }
 
-.movie-carousel-item img {
-    width: 200px; /* Ajuste inicial del tamaño de la imagen */
-    max-width: 100%; /* Asegura que la imagen no se extienda más allá de su contenedor */
-    object-fit: cover;
-    opacity: 0.8;
-    transition: all 0.5s ease;
+/* Pistas y slides alineados y de igual altura */
+.carousel .slick-track {
+  display: flex;
+  align-items: stretch;
+}
+.carousel .slick-slide {
+  height: auto;
+}
+.carousel .slick-slide > div {
+  height: 100%;
 }
 
-.movie-carousel-item img:hover {
-    cursor: crosshair;
-    transform: scale(3.7); /* Escalar la imagen al pasar el cursor */
-    opacity: 1;
-    filter: contrast(120%);
+.carousel__slide {
+  padding: 10px;
+  height: 100%;
 }
 
-.movie-carousel-item p {
-    margin-top: 10px;
-    text-align: center;
+.carousel__item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: center;
+  font: inherit;
+}
+
+.carousel__poster {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface-2);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.26s var(--expo-out), box-shadow 0.26s ease;
+}
+.carousel__item:hover .carousel__poster {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+.carousel__item:focus-visible .carousel__poster {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+.carousel__poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel__title {
+  margin: 2px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.carousel__stars {
+  display: flex;
+  justify-content: center;
+}
+.carousel__score {
+  margin: 0 0 2px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* --------- Flechas de navegación --------- */
+.carousel .slick-prev,
+.carousel .slick-next {
+  width: 44px;
+  height: 44px;
+  z-index: 2;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.18s ease;
+}
+.carousel .slick-prev:hover,
+.carousel .slick-next:hover {
+  background: rgba(0, 0, 0, 0.82);
+}
+.carousel .slick-prev {
+  left: 2px;
+}
+.carousel .slick-next {
+  right: 2px;
+}
+/* oculta el ícono por defecto de slick (usamos nuestro chevron SVG) */
+.carousel .slick-prev:before,
+.carousel .slick-next:before {
+  display: none;
+}
+.carousel .slick-prev svg,
+.carousel .slick-next svg {
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  .carousel {
+    padding: 0 38px;
+  }
 }
