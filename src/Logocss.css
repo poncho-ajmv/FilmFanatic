@@ -119,6 +119,13 @@
   margin-left: auto;
 }
 
+/* Grupo derecho: Filtros + engranaje (siempre juntos en la misma fila) */
+.menu__right {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* Botón "Filtros" (solo visible en móvil) */
 .filters-toggle {
   display: none;
@@ -133,7 +140,6 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  margin-left: auto;
 }
 
 /* Selector de género (mismo lenguaje visual que los demás) */
@@ -237,23 +243,26 @@
     padding: 10px 16px;
     gap: 10px 10px;
   }
-  /* Fila 1: logo · (Filtros + engranaje a la derecha) — Fila 2: buscador */
-  .search-container {
-    max-width: none;
-    order: 4;
-    flex-basis: 100%;
-    min-width: 0;
+  .menu__logo img {
+    height: 40px; /* un poco más chico para que quepa junto a Filtros + engranaje */
+  }
+  /* Fila 1: logo · (Filtros + engranaje juntos a la derecha) — Fila 2: buscador */
+  .menu__right {
+    order: 1;
+    margin-left: auto; /* empuja el grupo Filtros+engranaje a la derecha */
+    flex-shrink: 0;
   }
   .filters-toggle {
     display: inline-flex;
-    order: 2;
   }
-  .settings-wrap {
-    order: 3; /* el engranaje queda SIEMPRE visible, junto a Filtros */
-    flex-shrink: 0;
+  .search-container {
+    max-width: none;
+    order: 2;
+    flex-basis: 100%;
+    min-width: 0;
   }
   .menu__actions {
-    order: 5;
+    order: 3;
     width: 100%;
     display: none;
     flex-direction: column;

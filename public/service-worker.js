@@ -1,7 +1,12 @@
 /* Service Worker de FilmFanatic — cache network-first para funcionar como PWA */
-const CACHE = "filmfanatic-v1";
+const CACHE = "filmfanatic-v2";
 
 self.addEventListener("install", () => self.skipWaiting());
+
+// Permite que la app pida activar de inmediato la versión nueva
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
+});
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(

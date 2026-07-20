@@ -758,16 +758,6 @@ function App() {
             )}
           </form>
 
-          <button
-            type="button"
-            className="filters-toggle"
-            onClick={() => setFiltersOpen((o) => !o)}
-            aria-expanded={filtersOpen}
-          >
-            <FilterIcon />
-            {t("filters")}
-          </button>
-
           <div className={`menu__actions ${filtersOpen ? "menu__actions--open" : ""}`}>
             <div className="media-switch" role="group" aria-label="Tipo">
               <button
@@ -798,25 +788,37 @@ function App() {
             </select>
           </div>
 
-          <SettingsMenu
-            dark={dark}
-            applyTheme={applyTheme}
-            settings={settings}
-            setSettings={setSettings}
-            activeFilter={activeFilter}
-            sortHandlers={{
-              popular: fetchPopular,
-              recent: fetchRecent,
-              top: fetchTop,
-              alltime: fetchAllTime,
-            }}
-            clickMode={clickMode}
-            setClickMode={changeClickMode}
-            contentMode={contentMode}
-            setContentMode={changeContentMode}
-            language={language}
-            setLanguage={changeLanguage}
-          />
+          <div className="menu__right">
+            <button
+              type="button"
+              className="filters-toggle"
+              onClick={() => setFiltersOpen((o) => !o)}
+              aria-expanded={filtersOpen}
+            >
+              <FilterIcon />
+              {t("filters")}
+            </button>
+
+            <SettingsMenu
+              dark={dark}
+              applyTheme={applyTheme}
+              settings={settings}
+              setSettings={setSettings}
+              activeFilter={activeFilter}
+              sortHandlers={{
+                popular: fetchPopular,
+                recent: fetchRecent,
+                top: fetchTop,
+                alltime: fetchAllTime,
+              }}
+              clickMode={clickMode}
+              setClickMode={changeClickMode}
+              contentMode={contentMode}
+              setContentMode={changeContentMode}
+              language={language}
+              setLanguage={changeLanguage}
+            />
+          </div>
         </div>
       </header>
 
