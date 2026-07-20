@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App";
+import "./responsive.css"; // Ajustes móviles (se carga al final para ganar en la cascada)
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

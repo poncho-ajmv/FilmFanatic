@@ -575,8 +575,11 @@
 
 /* --------- Responsive --------- */
 @media (max-width: 860px) {
+  .hero {
+    min-height: auto;
+  }
   .hero__inner {
-    padding: 34px 22px;
+    padding: 34px 22px 44px;
   }
   .hero__top {
     grid-template-columns: 1fr;
@@ -597,5 +600,44 @@
   }
   .hero__trailer {
     margin-top: 32px;
+  }
+}
+
+/* Ajustes generales de teléfono: quita el zoom global (poco fiable en móvil)
+   y aprovecha mejor el ancho con 2 columnas de pósters. */
+@media (max-width: 820px) {
+  .App {
+    zoom: 1;
+  }
+  .App main {
+    padding: 0 16px 48px;
+  }
+  .section {
+    margin-top: 34px;
+  }
+  .section__title {
+    font-size: 20px;
+    margin-bottom: 18px;
+  }
+  .movie-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 22px 14px;
+  }
+  .hero__actions {
+    gap: 10px;
+  }
+  .hero__actions .favorite-button,
+  .hero__actions .imdb-button {
+    height: 46px;
+  }
+}
+
+@media (max-width: 420px) {
+  .movie-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 12px;
+  }
+  .movie-card__title {
+    font-size: 14px;
   }
 }

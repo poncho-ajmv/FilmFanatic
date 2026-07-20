@@ -796,27 +796,27 @@ function App() {
                 </option>
               ))}
             </select>
-
-            <SettingsMenu
-              dark={dark}
-              applyTheme={applyTheme}
-              settings={settings}
-              setSettings={setSettings}
-              activeFilter={activeFilter}
-              sortHandlers={{
-                popular: fetchPopular,
-                recent: fetchRecent,
-                top: fetchTop,
-                alltime: fetchAllTime,
-              }}
-              clickMode={clickMode}
-              setClickMode={changeClickMode}
-              contentMode={contentMode}
-              setContentMode={changeContentMode}
-              language={language}
-              setLanguage={changeLanguage}
-            />
           </div>
+
+          <SettingsMenu
+            dark={dark}
+            applyTheme={applyTheme}
+            settings={settings}
+            setSettings={setSettings}
+            activeFilter={activeFilter}
+            sortHandlers={{
+              popular: fetchPopular,
+              recent: fetchRecent,
+              top: fetchTop,
+              alltime: fetchAllTime,
+            }}
+            clickMode={clickMode}
+            setClickMode={changeClickMode}
+            contentMode={contentMode}
+            setContentMode={changeContentMode}
+            language={language}
+            setLanguage={changeLanguage}
+          />
         </div>
       </header>
 
