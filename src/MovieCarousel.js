@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Slider from "react-slick";
 import StarRating from "./StarRating";
 import { titleOf } from "./api";
@@ -49,6 +49,23 @@ function MovieCarousel({
   onReveal = () => {},
 }) {
   const visible = movies.filter((m) => censorStatus(m) !== "hidden");
+
+  // react-slick a veces mide mal el ancho al montar (sobre todo el PRIMER
+  // carrusel de la página, que aparecía gigante). Forzamos un recálculo tras
+  // el montaje y poco después, para que use el ancho real del teléfono.
+  useEffect(() => {
+    if (!visible.length) return undefined;
+    const fire = () => window.dispatchEvent(new Event("resize"));
+    const raf = requestAnimationFrame(fire);
+    const t1 = setTimeout(fire, 200);
+    const t2 = setTimeout(fire, 600);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [visible.length]);
+
   if (!visible.length) return null;
 
   const settings = {

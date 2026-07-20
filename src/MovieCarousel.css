@@ -6,6 +6,10 @@
   max-width: 1460px;
   margin: 26px auto 6px;
   padding: 0 52px;
+  /* Evita que el carrusel (flex-item hijo de .App) se desborde a lo ancho:
+     sin esto, react-slick medía mal y el primer carrusel salía gigante. */
+  min-width: 0;
+  width: 100%;
 }
 
 /* Pistas y slides alineados y de igual altura */
